@@ -1,0 +1,123 @@
+name: Build Kazumi Windows (cover score badge)
+
+on: [push, workflow_dispatch]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Enable long paths
+        run: git config --global core.longpaths true
+
+      - name: Checkout build repo
+        uses: actions/checkout@v4
+
+      - name: Checkout upstream Kazumi (pinned)
+        uses: actions/checkout@v4
+        with:
+          repository: Predidit/Kazumi
+          ref: 7265274fac136a0cfe6ee32ea37f32f06ea57672
+          path: kazumi
+
+      - name: Extract score badge patch
+        shell: bash
+        run: |
+          printf '%s' \
+            'H4sICBQi8moCA2thenVtaS1zY29yZS1iYWRnZS1VMS5wYXRjaADVW+tv29YV/+6/4g4oammkaVKSZVtZ6iZu0xZL1yJOmw9FIFDS' \
+            'lc2FIjWSiu22BpK+8miyoEOyvhKg7frIurVJu25J82iA/Su1ZPtT/oWdey8p8XEvSdnB1hlBJJH3eZ6/c+65LaPdRlNTy4aH9GnT' \
+            'aEw3sG5NN3WnNd3QreVex6iTH0pLdzzUyGoxYVgtvIb0mdlqZa6tKE2t3Cg3Z5GmqtVKZWJqaip7lglJknLM9OSTaKoil5FUkWcQ' \
+            '/DA6XRuWONnVmyf0ZVw7ob8KHUJDWNhbtZ0TdaOzXDf1dezQcSb3TaR2bRm6aS/7H/UVbHZHHaW0jqtGaxl7w4W7TdvB9YYOD7Pm' \
+            '7ditnondoOtwCMPDnaypXeycNJrQ2fVsB54Hn8M5Gd0qsjYPlKvK5TKhXdPUXRcdZPMsArFeRnjNw1bLRUue7mFYjXuM7ge9NoGS' \
+            'f23D0k3UsnsNE6OOvvYsNpZXPLQfNey1RdtyPUc3LM9Vhq/2TUwlR3Gw13MshC0dhnkWOzavEflbQORtQfSa/MGMlmt4hm29YL0E' \
+            'RHkGuzA4dmvwpofltK5tk6xwaaXneSY+2DPMFnZqaR3I3++YcD3XWT5MRWsFFniIM1DqzJ6+XEM+t58jzDZaqe2bKzBmLT53IX2t' \
+            'rtOMTdIB+XBfmTR1ZxlPHkcLC2hyUk4fBITbW6kRVh8j3zJar1Ce10aSkdq+mPK2KHo1HhUeAQ3GocA4+y+CbosUrGmfxA5oVWKr' \
+            '0l42KeXanpRzY1LeLU1Po+0bb/XPvjO49sX2ma8D64P6b785uHJzcPHbh/fOHgyt3tE9w1peImb04b1zD+9dEAza//zi1uXr29/+' \
+            'tHX/WzSFtq5c2Ln2GZr6+dSFwQc/bX1+h03686mL/Xun+m//AwYavP/JztVTO59d63/+5+0btwbfvfHzqTfEXHBX7FW6DLSfTxWE' \
+            'nlnyrS5YzCXskYUX/E/3t3jdVcgYR+iGiujxx0XDkL8GnwToCaRyyeobUTDbzRMCwWgbwDLa4JDhKXitq1stAYOphXGwVUOviBYZ' \
+            'Mtcp2whMtpRuRrPMdkZ3vunO6DSe+c7aAM+EZ/TxzTjV7ozGxbTXWUMYbVQYCm/KSC/ajAW4lcovE7dBjtTUFTdsz7M7Wa18Avja' \
+            'Tpd3kAClTHGhoKom0pFiyqSid8dFFizxbAOGaGWDZ8/oYNOwcA4UnWzqw+lmU53RG5qi6Jperc7O54HTnMHScDWnOQPYJQKwyzyA' \
+            '3TZBM7Az3QGA6AA8zgWn05H4/xBQk91q5VkSUGjlOTkJi4/6FCLwOA86Ph5y8oHmMZOPXn8dGe4x3QO5Jw5AUZSQdSVtE2/DykLw' \
+            'NFqCLYLnBxmkC6+UKKDXKmV5bs8rjxv+Kb4Z8f1XEso8TT0KsR5TQl0/AMbVEmA0nbzrYMvzm5GvShP+w85hsDkC8OQPXG8QS83W' \
+            'VgBaebBhPqLkPU3sBpsuTjaL84BDoQQLp0TmOMAB/qDGq7h10F4r+AhsjrfMo7ZtekaXS78O8JTIPpocfPOX/tXr2w/u85GsT7Dn' \
+            'YN4C+c9VGrZ9oqODYjp2jzBQCFNdWGQNlVQZFm3aTo19uErXAYzprHMpm3iWNLVxskqCXUv59iztZsfS7vYrJXYb3yvV09mSXJoB' \
+            'Pa2W5Iq6Z0X1RaRpd4BkHmCsORVAwNxciNT+lgHV2D3PBzERsWn4KAkFyiIzNrCIvYj2P8ELtrMj1bECcH+Vi6bRPXIEN72EYDds' \
+            'BxZ5RG8ZPbfmy8nB0DNFN02uNvivm4bT7EHcU6iD17CCXhAe1OmuLe9FvdUiWpgUU39tNHh6yTEVw3260/XWeZMtoEUiF0x/RboT' \
+            'lSC357RB3BdhFUBw7DwLmBMoJdS8gFLUGqbEuElR79gnDVwHKSAS1sqI2KOLtK0ltsyXdXD0lieO0EVvuHF7/pidhrIBB4STD9Uh' \
+            'knBKD8+DCLbJy1KF1JqrR1m681rYLERD+JCoS+MLuvQIxFzKI+RSuohLexBwKYd4S7sVbmkPop1LsKO/w7/4kQUn3KqNk8cZCb80' \
+            'tuhLexF8UcgUTeqkZB1yZBtSsgyCrEG+MHvsbEJqJJ5kbAzWP/54WraGIwEZgXZagJ0eWI8ZUKeH0SJVZagjJTPD04T4s+NCodoY' \
+            'qWIQ5czPy5UKkkoqCUt3C56Ipvq/IrECNeqLzI6jIHCADlMj4+2t4A4G432UfCp2exhf7Au3YpYFmtHmCv251CTfI81MvYHNJW/d' \
+            'xMOmZCw2Nn35PAbr3VmAEbrrxwxvZege2zDtEoWkddrwkP97aIUC5WavDwNVInnnYL1EfkUS+5v9ILLB9ocKfhRWWJgcfPTG4P1P' \
+            'WCI1GluABSGzgYZpkedEodqmvVqjI7zg/1KwCW7QNdxIW5fQpBaiT4gCGcY72NhGmNAuy9WKxFvx7CXPgV8H3EPGGqiiFowSGDXc' \
+            'gbGNpjukP10aBBuMAugxOsOIEHitafZaeNgvBnkDHxd4xBDq6TL3DIxjC/TddYg8LQxz6cRogFFd0bv4qeGDCHqKOWFoZLUgUhlO' \
+            'GqU4GShAG6AyROwY6CjEPFs8rjhirxai/DesA2uGy6Tz+dAvpWNYkUmFGYaQW3c93UkJRllY5tOK9KBKkPTwid3HvTk/9K7Emx0y' \
+            '8ZrRMHFBECNQ7XCZzeRF5gLlyCP4gpxH5k4FwJdYkGO+kTg0/K6szqoqP1eSjn+Oc6WkGDE3GxPwj58wzcjshZOWGU0nLLwKak9O' \
+            'oe0WDvKkLIuqsj9F0UtqudJu0/TpdAufnLZ6phnPjmZNRBySKqsQy8tVDZxRMncpyo9KE9I0Oae6eXrn2mf9W19u3n53+6s/bX30' \
+            'FjMn8H3wyRl6AgXN/LZn3yFnYoKDsp0zF6A3ihyQXehf/HTr3JnBuw/6Z2+yZoP3/9W/+V3/1vf9bz7oX71OT9DI4NsPPoQR+pe+' \
+            '7p/+qP/dla3P78CrzdsX+5fe2/7nrc27dzfvX2GHY1v339u6ezV0REbXdufy4PJPMKC/oY9/gnnJeijmQ5u3v/n51GkC49Dmj+/C' \
+            'IDD4zukH/bcvbt//e//qnf7561uX7w7On2f7Hrx7bvPebTp4xLuPMEyKb5cCTU4CHz8Uc3ukfOMEXvdhh4P/0DMgmgEHbIC5CcEd' \
+            '+iDIrOxHbd102auNImVhrOiBdvVfMO5eYvR4eO9s/8s3BjcuDd7/Aui0c+o0oc3cXHcNbd3769aVL4BgD++d27z/YOvy9cHHP2z9' \
+            '8FX/zHvQpn/zTv/Gbf8kks3VsG0zwF3+XE8Sz+oYLUx++ISgqEaIZ6SYZyRGCzboCn2hxPeFUoovJGOOEnAifyhFo7llC3q+aBux' \
+            '0C/pLkOAcegwfarEAeeCLxBPA2Ges1wMQU7bsTuHjx45WJiRUVlGVfg/Ac1rKd1mZVSR0ZxM3UOoX9gzB3H7Wtg7S/GD6ovnd05d' \
+            'Gnzwx8Gt77bPfd+/c4Xo3YNr2zdOgzaB3g3e8mVo8/b5nTfv9y/d2L5xN3E07fsAGpYX1LWDZWbm4kA7mliIpBRsy1wveHb3CPMH' \
+            '8VyCpsbSBdFfYSQgRd1dOhaI7sKxXZe8PzBK/i8mnvmnAPnDR4olklEID11IfHQxSq5qJYWkV7WKwgu6hq6YcD5gxiH4W1TL5WKO' \
+            'YDKOPkYTs3nLispJiRPEwVl6oIS8bTGUQd5SkMGNCcNC5SqrK4bHD/FGkUiIThqjU0lRhX2E2EMSZyo0RcsRUGaGmKFfo+/BN2bu' \
+            'NiYkDlTpkuqZaaCMiZte8FmHNw4ArsTxbs7WPjZpNZpqSdcURQPAopbV5Alv3vFGMCZvD4JkSlVZ0yCyrsrzo8C6vsj6vGi7oHT5' \
+            'DiUA/uomuFj6UdC0Ivo1MK5SBM01zKP2U9RbFhiZhxVAgEm2vroLQIWZO4YEwBhu3/hy8Obb259SNPLOxc3bd/rfvrnz2VtbVz7c' \
+            '+dsH/TtfEmNIRRpMbJO5x7pLYMcik8YDTWJ63YLvpKlmyUz06TIRW20k5/faEBPQ8Ub5HRkl3xA69NwNckwSoN5YRihKjxKhR0mZ' \
+            'QU+wxaApNFMtotdfj/RmoyZ7U2qWon2HGZMxO+4LEc4nT70ZoRpLGeSm3e7oFsmvtDC4eNMdVo+GSbmA6pHXvqAVwdKoYBmRNIpA' \
+            'wjRcoAIB3/L1CvEtPAazwKTHvjB+iq8377x+NYmPqbgS65M7oDHR0RmVVjtHahN2o6L+duue4Zk4tjyJHy7Gihci+6wgKYU1RUGd' \
+            'UWG8MRL9Fdh/p1uozIGT8eVXMSxgi+GtF1k1R3WG0Kta3hu9GKdXdNff/n4UlRODW5g3FS0XfIptLSoiPiHZUBG5EnUJyrc1tSJr' \
+            '5BhZLcnVRyEMGRUfuao+GAYmiyZJjpSjyREtFxLU4wQgIAGTk/xzxWFBG6WOqM4iR61FADFKovPL0Ma89a6fn5URU3EWz/C78uvJ' \
+            '4gvPNzxv8PRz1lp4ZEEJypAdRTT52Gs5GLKBEmlf/q5CW0nUfii/h0CvMIn+fQtNJk4jI8uOGIrRkIFYjE4OKI5RqZHU5ublyqNS' \
+            'DFqS5HahP6GTXSN+8iQJnuBHRi2SP+8iaV8gpK1RiS+mn35Gu4nPMkcDyiFLUgt9559m+scppXJVJqcpAPpKSVodNlzvKEmkZVKK' \
+            'sF03nKfgNfrVfkSSaVSU/GfKOtYdkJkffxjJTPLgzOCemA2JO55kMhHzJaJKtieVZio8P5B/l6nkF/OIzxd5IqViVhinjyLyqs/C' \
+            'crlMNlculXibo/KTtbNoBiy0m1hqLL52+jS82GBFVbai6i5XxDxgqPCfUnhfLAkWdpyjTqHVLEQIyUShXFHlWVhbWeMZhxxry5Ff' \
+            '2/+EsNZqN5VW9Jzb4BRYjVFexS2K392FJdGFIynvHjkVMbSygXephVMEIbjFEnkOQUzHtkbXWxjniT8Azs/KpcouFYWvoFENyFUS' \
+            '8guonDAeXcnEXqVLVINB2bmrGgzj/7L4wviFVF2EEdWYKbCTBl7NnwIbtvZTYKWZxkyjWlEUTdOaszNjp8BG4+VNgY165L3qENyu' \
+            '/eVedQh3x6SEj6YhcJ09CnoLGOsCUmuu+B/1rh49f01t4zOxqlXny605Ram0VL2itkRMFI0SZ52oHYuCCcc0lc8yzh1uvaV3PeMk' \
+            'UJLqb91dwSOS5BkgOMnlDvBfYCh7VO9gqzcWJ1l3N4uZ4WY+P7WZufmqNq8o5VazPTej5+NnZKB0lkaaUq5WS7KmshL5UjguWaId' \
+            'jmC3Z3rjh3CRAI7GbwdGT9KuR4gr5yMeYYh76klUt4v72QKkk3ULHQmhUHbPvHe+xyqvzlVrmnYXvJjmYkXV2PU01Lm3S9V7QaLS' \
+            'Lugq7a1sPfsadq4bw2PdGc51axhlXnfdNbAb+yJrvquseS+z7uE6qxAMFlNnFL89PpYobPDSRcWg+HbOt8vzkeLbXZtlUi+Q+5Kh' \
+            'kPuClG/+EsLRQb+gijBRxJt2yY1fR1jmXuEjJ/c5clqiNbNT/JS64fzr01Tu5Tzhrc7/AOxGtYUzSAAA' > score.b64
+          base64 -d score.b64 | gunzip > score-badge.patch
+
+      - name: Apply score badge patch
+        shell: bash
+        run: |
+          cd kazumi
+          git apply --verbose ../score-badge.patch
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2.16.0
+        with:
+          channel: stable
+          flutter-version-file: kazumi/pubspec.yaml
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '18'
+
+      - name: Flutter pub get
+        working-directory: kazumi
+        run: flutter pub get
+
+      - name: Build Windows
+        working-directory: kazumi
+        run: flutter build windows
+
+      - name: Package release
+        shell: powershell
+        run: Compress-Archive -Path kazumi/build/windows/x64/runner/Release/* -DestinationPath Kazumi_windows_score_badge.zip
+
+      - name: Publish release asset
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete score-badge-build --cleanup-tag --yes || true
+          gh release create score-badge-build Kazumi_windows_score_badge.zip --title "Kazumi Windows (cover score badge)" --notes "Automated build of Kazumi 2.4.3 with Bangumi score badge on covers."
