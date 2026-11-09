@@ -108,7 +108,18 @@ jobs:
 
       - name: Build Windows
         working-directory: kazumi
-        run: flutter build windows
+        shell: bash
+        env:
+          KAZUMI_APPID: ${{ secrets.KAZUMI_APPID }}
+          KAZUMI_KEY: ${{ secrets.KAZUMI_KEY }}
+          DANDANAPI_APPID: ${{ secrets.DANDANAPI_APPID }}
+          DANDANAPI_KEY: ${{ secrets.DANDANAPI_KEY }}
+        run: |
+          flutter build windows \
+            --dart-define=KAZUMI_APPID="$KAZUMI_APPID" \
+            --dart-define=KAZUMI_KEY="$KAZUMI_KEY" \
+            --dart-define=DANDANAPI_APPID="$DANDANAPI_APPID" \
+            --dart-define=DANDANAPI_KEY="$DANDANAPI_KEY"
 
       - name: Package release
         shell: powershell
