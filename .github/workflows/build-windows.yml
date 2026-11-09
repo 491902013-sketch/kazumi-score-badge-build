@@ -94,7 +94,7 @@ jobs:
         uses: subosito/flutter-action@v2.16.0
         with:
           channel: stable
-          flutter-version-file: kazumi/pubspec.yaml
+          flutter-version: 3.47.9
 
       - name: Setup Java
         uses: actions/setup-java@v4
